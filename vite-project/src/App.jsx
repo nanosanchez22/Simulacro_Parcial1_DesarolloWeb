@@ -5,18 +5,19 @@ import Detalles from './Pages/Detalles/Detalles'
 import { useEffect, useState } from 'react'
 
 function App() {
-  const [games, setGames] = useState([]);
+/*   const [games, setGames] = useState([]);
 
   useEffect(() => {
     fetch('http://localhost:3000/api/games')
       .then(response => response.json())
       .then(data => setGames(data))
-  }, [])
+      .catch(error => console.log('Error fetching games:', error))
+  }, []) */
 
   return (
     <>
     <Routes>
-      <Route path="/" element={<Home games={games} setGames={setGames}/>} />
+      <Route path="/" element={<Home/>} />
       <Route path="/game/:id" element={<Detalles />} />
     </Routes>
 

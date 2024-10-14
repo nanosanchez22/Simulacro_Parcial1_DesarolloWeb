@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import './TarjetaJuegos.css';
 import { Link } from "react-router-dom";
 
-function TarjetaJuegos({nombre, id, onDelete}) {
+function TarjetaJuegos({ nombre, id, onDelete }) {
+    // useEffect(() => {
+    //     console.log('TarjetaJuegos:', nombre, id);
+    // }, [nombre, id]);
+
     return (
         <div id="card_container">
             <div>

@@ -5,13 +5,15 @@ import { useState, useEffect } from 'react';
 
 
 
-function Home ({games, setGames}) {
+function Home () {
     const [newGame, setNewGame] = useState({
         title: '',
         description: '',
         players: '',
         categories: ''
     });
+
+    const [games, setGames] = useState([]);
 
     const handleChange = (e) => {
         setNewGame({
@@ -32,9 +34,10 @@ function Home ({games, setGames}) {
         .then(response => response.json())
         .then(data => {
             console.log('Game added:', data); //log para ver si se agrego el juego
-            setGames( prevGames => [...prevGames, data])
-            setNewGame({ title: '', description: '', players: '', categories: ''})
-    })
+
+            setGames([...data]); //data por newGame
+            setNewGame({ title: '', description: '', players: '', categories: ''});
+        })
         .catch(error => console.log('Error adding game:', error))
     };
 
@@ -43,17 +46,26 @@ function Home ({games, setGames}) {
         fetch(`http://localhost:3000/api/games/${id}`, {
             method: 'DELETE'
         })
-        .then(response => response.json())
-        .then(() => {
+        // .then(response => response.json())
+        .then((response) => {
             console.log('Game deleted:', id); //log para ver si se elimino el juego
-            setGames(prevGames => prevGames.filter(game => game.id !== id));
+
+            if (response.status !== 204) {
+                return console.log('Error deleting game:', response.status);
+            }
+
+            const remainingGames = games.filter(game => game.id !== id);
+            setGames(remainingGames);
         })
         .catch(error => console.log('Error deleting game:', error))
     };
 
     useEffect(() => {
-        console.log('Games updated:', games); //log para ver si se estan trayendo los juegos
-    }, [games]);
+        fetch('http://localhost:3000/api/games')
+          .then(response => response.json())
+          .then(data => setGames(data))
+          .catch(error => console.log('Error fetching games:', error))
+      }, [])
 
     if(games.length === 0) {
         return <h1>Loading...</h1>
@@ -73,10 +85,10 @@ function Home ({games, setGames}) {
             </div> */}
 
             <div>
-                <input type="text" name="title" placeholder="Nombre" onChange={handleChange} />
-                <input type="text" name="description" placeholder="Descripcion" onChange={handleChange} />
-                <input type="text" name="players" placeholder="Cantidad de Jugadores" onChange={handleChange} />
-                <input type="text" name="categories" placeholder="Categorias" onChange={handleChange} />
+                <input type="text" name="title" placeholder="Nombre" value={newGame.title} onChange={handleChange} />
+                <input type="text" name="description" placeholder="Descripcion" value={newGame.description} onChange={handleChange} />
+                <input type="text" name="players" placeholder="Cantidad de Jugadores" value={newGame.players} onChange={handleChange} />
+                <input type="text" name="categories" placeholder="Categorias" value={newGame.categories} onChange={handleChange} />
                 <button onClick={handleAddGame}>Agregar Juego</button>
             </div>
 
